@@ -135,7 +135,7 @@ function highlightSelection() {
     tags.forEach(tag => {
         tag.classList.remove('highlight');
     });
-
+    clearBtn();
     if(selectedGenre.length != 0) {
         selectedGenre.forEach(id => {
             const highlightedTag = document.getElementById(id);
@@ -144,6 +144,28 @@ function highlightSelection() {
     }
     
 }
+
+// Clear Genre Filter's 
+function clearBtn() {
+    let clearBtn = document.getElementById('clear');
+    if(clearBtn) {
+        clearBtn.classList.add('highlight');
+    }
+    else {
+        let clear = document.createElement('div');
+        clear.classList.add('tag', 'highlight');
+        clear.id = 'clear';
+        clear.innerText = 'Clear X';
+        clear.addEventListener('click', ()=> {
+            selectedGenre = [];
+            setGenres();
+            getMovies(API_URL);
+        });
+        tagsElement.append(clear);
+    }
+
+}
+
 
 getMovies(API_URL);
 
@@ -155,7 +177,6 @@ getMovies(API_URL);
             showMovies(data.results);
         }
         else {
-            print('Working');
             main.innerHTML = `<h1 class='no-results'>No Results Found</h1>`
         }
         
@@ -205,7 +226,8 @@ form.addEventListener('submit', (e) => {
     e.preventDefault();
     
     const searchTerm = searchBar.value;
-
+    selectedGenre = [];
+    highlightSelection();
     if(searchTerm) {
         getMovies(searchURL + '&query=' + searchTerm);
     }
