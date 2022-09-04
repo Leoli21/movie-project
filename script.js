@@ -6,6 +6,18 @@ const API_URL = BASE_URL + '/discover/movie?sort_by=popularity.desc&' + API_KEY;
 const IMG_URL = 'https://image.tmdb.org/t/p/w500';
 const searchURL = BASE_URL + '/search/movie?' + API_KEY;
 
+// Selecting DOM Elements
+const prev = document.getElementById('prev');
+const current = document.getElementById('current');
+const next = document.getElementById('next');
+
+// Selecting DOM Elements
+const main = document.getElementById('main');
+const form = document.getElementById('form');
+const searchBar = document.getElementById('search');
+const tagsElement = document.getElementById('tags');
+
+// Genres Object
 const genres = [
     {
         "id": 28,
@@ -85,11 +97,11 @@ const genres = [
       }
 ]
 
-
-const main = document.getElementById('main');
-const form = document.getElementById('form');
-const searchBar = document.getElementById('search');
-const tagsElement = document.getElementById('tags');
+var currentPage = 1;
+var nextPage = 2;
+var prevPage = 3;
+var lastUrl = '';
+var totalPages = 1000;
 
 var selectedGenre = [];
 setGenres();
@@ -171,10 +183,32 @@ getMovies(API_URL);
 
 // Get Data From TMDB API
  function getMovies(url) {
+    lastUrl = url;
     fetch(url).then(res => res.json()).then(data => {
         console.log(data.results);
         if(data.results.length != 0) {
             showMovies(data.results);
+            currentPage = data.page;
+            nextPage = currentPage + 1;
+            prevPage = currentPage - 1;
+            totalPages = data.total_pages;
+            
+            current.innerText = currentPage;
+
+            if(currentPage <= 1) {
+                prev.classList.add('disabled');
+                next.classList.remove('disabled');
+            }
+            else if(currentPage >= totalPages) {
+                prev.classList.remove('disabled');
+                next.classList.add('disabled');
+            }
+            else {
+                prev.classList.remove('disabled');
+                next.classList.remove('disabled');
+            }
+
+            tagsElement.scrollIntoView({behavior : 'smooth'});
         }
         else {
             main.innerHTML = `<h1 class='no-results'>No Results Found</h1>`
@@ -235,3 +269,40 @@ form.addEventListener('submit', (e) => {
         getMovies(API_URL);
     }
 });
+
+prev.addEventListener('click', ()=> {
+    if(prevPage > 0) {
+        pageCall(prevPage);
+    }
+});
+
+next.addEventListener('click', ()=> {
+    if(nextPage <= totalPages) {
+        pageCall(nextPage);
+    }
+});
+
+function pageCall(page) {
+    // Split's lastUrl into two parts: 
+    // First part is the baseURL and second part contains both the query parameters and api key
+    let urlSplit = lastUrl.split('?');
+
+    // Split urlSplit into two parts:
+    // First part will be the query params and the second part is the api key
+    let queryParameters = urlSplit[1].split('&');
+
+    let key = queryParameters[queryParameters.length - 1].split('=');
+    if(key[0] != 'page') {
+        let url = lastUrl + '&page=' + page;
+        getMovies(url)
+    }
+    else {
+        key[1] = page.toString();
+        let newPageParams = key.join('=');
+        queryParameters[queryParameters.length - 1] = newPageParams;
+        let queryParams = queryParameters.join('&')
+        let newUrl = urlSplit[0] + '?' + queryParams;
+        getMovies(newUrl);
+    }
+
+}
