@@ -10,9 +10,14 @@
 </head>
 <body>
     <header>
-        <form id="form">
-            <input type="text" placeholder="Search..." id="search" class="search">
-        </form>
+        <div class="topnav">
+            <h3>Discover Movies/TV Shows</h3>
+            <a href="javascript:void(0)" class="active" id="movieNav">Movies</a>
+            <a href="javascript:void(0)" id="tvShowsNav">TV Shows</a>
+            <form id="form">
+                <input type="text" placeholder="Search..." id="search" class="search">
+            </form>
+          </div>
     </header>
     <div id="tags"></div>
     <div id="myNav" class="overlay">
@@ -36,6 +41,7 @@
 
 
 
-    <script src="script.js"></script>
+    <script src="src/movies.js"></script>
+    <script src="src/tvshows.js"></script>
 </body>
 </html>

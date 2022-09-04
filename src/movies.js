@@ -2,7 +2,7 @@
 
 const API_KEY = 'api_key=d38867bd0697712d7274de2cbbe45fc5';
 const BASE_URL = 'https://api.themoviedb.org/3';
-const API_URL = BASE_URL + '/discover/movie?sort_by=popularity.desc&' + API_KEY;
+const API_MOVIE_URL = BASE_URL + '/discover/movie?sort_by=popularity.desc&' + API_KEY;
 const IMG_URL = 'https://image.tmdb.org/t/p/w500';
 const searchURL = BASE_URL + '/search/movie?' + API_KEY;
 
@@ -16,7 +16,7 @@ const main = document.getElementById('main');
 const form = document.getElementById('form');
 const searchBar = document.getElementById('search');
 const tagsElement = document.getElementById('tags');
-
+const movieNavBtn = document.getElementById('movieNav');
 // Genres Object
 const genres = [
     {
@@ -103,6 +103,17 @@ var prevPage = 3;
 var lastUrl = '';
 var totalPages = 1000;
 
+movieNavBtn.addEventListener('click', ()=> {
+    // Remove the active class from the tvNavBtn
+    // Add the active class to the movieNavBtn
+    if(tvNavBtn.classList.contains('active')) {
+        tvNavBtn.classList.remove('active');
+        movieNavBtn.classList.add('active');
+        getMovies(API_MOVIE_URL);
+    }
+}); 
+
+
 var selectedGenre = [];
 setGenres();
 
@@ -132,7 +143,7 @@ function setGenres() {
                 }
             }
             console.log(selectedGenre);
-            getMovies(API_URL + '&with_genres=' + encodeURI(selectedGenre.join(',')));
+            getMovies(API_MOVIE_URL + '&with_genres=' + encodeURI(selectedGenre.join(',')));
             highlightSelection();
         });
         tagsElement.append(div);
@@ -171,7 +182,7 @@ function clearBtn() {
         clear.addEventListener('click', ()=> {
             selectedGenre = [];
             setGenres();
-            getMovies(API_URL);
+            getMovies(API_MOVIE_URL);
         });
         tagsElement.append(clear);
     }
@@ -179,7 +190,7 @@ function clearBtn() {
 }
 
 
-getMovies(API_URL);
+getMovies(API_MOVIE_URL);
 
 // Get Data From TMDB API
  function getMovies(url) {
@@ -247,7 +258,6 @@ getMovies(API_URL);
         });
     })
  }
-
  const overlayContent = document.getElementById('overlay-content');
  /* Open when someone clicks on the span element */
 function openNav(movie) {
@@ -384,7 +394,7 @@ form.addEventListener('submit', (e) => {
         getMovies(searchURL + '&query=' + searchTerm);
     }
     else {
-        getMovies(API_URL);
+        getMovies(API_MOVIE_URL);
     }
 });
 
