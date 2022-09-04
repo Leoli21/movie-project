@@ -222,7 +222,7 @@ getMovies(API_URL);
     main.innerHTML = '';
 
     data.forEach(movie => {
-        const {title, poster_path, vote_average, overview} = movie;
+        const {title, poster_path, vote_average, overview, id} = movie;
         const movieElement = document.createElement('div');
         movieElement.classList.add('movie');
         movieElement.innerHTML = `
@@ -236,15 +236,133 @@ getMovies(API_URL);
             <div class="overview">
                 <h3>Overview</h3>
                 ${overview}
+                <br/>
+                <button class="know-more" id="${id}">More Details</button>
             </div>
         `
-
+        
         main.appendChild(movieElement);
+        document.getElementById(id).addEventListener('click', () => {
+            openNav(movie);
+        });
     })
  }
 
- // Get the correct color for each vote
- function getColor(vote) {
+ const overlayContent = document.getElementById('overlay-content');
+ /* Open when someone clicks on the span element */
+function openNav(movie) {
+    let id = movie.id;
+    fetch(BASE_URL + '/movie/' + id + '/videos?' + API_KEY).then(res=> res.json()).then(videoData => {
+        console.log(videoData);
+        if(videoData) {
+            document.getElementById("myNav").style.width = "100%";
+            if(videoData.results.length > 0) {
+                var embed = [];
+                var dots = [];
+                videoData.results.forEach((video, idx) => {
+                    let {key, name, site} = video;
+
+                    if(site == 'YouTube') {
+                        embed.push(`
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/${key}" title="${name}" class="embed hide" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        `)
+
+                        dots.push(`
+                            <span class="dot">${idx + 1}</span>
+                        `)
+                    }
+                    
+                });
+                var content = `
+                <h1 class='no-results'>${movie.original_title}</h1>
+                <br/>
+                
+                ${embed.join('')}
+                <br/>
+
+                <div class="dots">${dots.join('')}</div>
+
+                `
+                overlayContent.innerHTML = content;
+                activeSlide = 0;
+                showVideos();
+            }
+            else {
+                overlayContent.innerHTML = `<h1 class='no-results'>No Results Found</h1>`;
+            }
+        }
+    });
+  }
+  
+/* Close when someone clicks on the "x" symbol inside the overlay */
+function closeNav() {
+    document.getElementById("myNav").style.width = "0%";
+    // stop playing video on modal close
+    const iframes = document.getElementsByTagName('iframe');
+    if (iframes !== null) {
+      for (let i = 0; i < iframes.length; i++) {
+        iframes[i].src = iframes[i].src; //causes a reload so it stops playing, music, video, etc.
+      }
+    }
+}
+
+var activeSlide = 0;
+var totalVideos = 0;
+function showVideos() {
+    let embedClasses = document.querySelectorAll('.embed');
+    let dots = document.querySelectorAll('.dot');
+
+    totalVideos = embedClasses.length;
+
+    embedClasses.forEach((embedTag, idx) => {
+        if(activeSlide == idx) {
+            embedTag.classList.add('show');
+            embedTag.classList.remove('hide');
+        }
+        else {
+            embedTag.classList.add('hide');
+            embedTag.classList.remove('show');
+        }
+    });
+
+    dots.forEach((dot, idx)=> {
+        if(activeSlide == idx) {
+            dot.classList.add('active');
+        }
+        else {
+            dot.classList.remove('active');
+        }
+    });
+}
+
+// Left and Right Arrow for Video Carousel
+const leftArrow = document.getElementById('left-arrow');
+const rightArrow = document.getElementById('right-arrow');
+
+leftArrow.addEventListener('click', ()=> {
+    if(activeSlide > 0) {
+        activeSlide--;
+    }
+    else {
+        activeSlide = totalVideos - 1;
+    }
+
+    showVideos();
+});
+
+rightArrow.addEventListener('click', ()=> {
+    if(activeSlide < totalVideos - 1) {
+        activeSlide++;
+    }
+    else {
+        activeSlide = 0;
+    }
+    showVideos();
+});
+
+
+// Get the correct color for each vote
+function getColor(vote) {
     if(vote >= 8) {
         return 'green';
     }
@@ -254,7 +372,7 @@ getMovies(API_URL);
     else {
         return 'red';
     }
- }
+}
 
 form.addEventListener('submit', (e) => {
     e.preventDefault();
