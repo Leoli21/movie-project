@@ -151,7 +151,14 @@ getMovies(API_URL);
  function getMovies(url) {
     fetch(url).then(res => res.json()).then(data => {
         console.log(data.results);
-        showMovies(data.results);
+        if(data.results.length != 0) {
+            showMovies(data.results);
+        }
+        else {
+            print('Working');
+            main.innerHTML = `<h1 class='no-results'>No Results Found</h1>`
+        }
+        
     });
  }
 
