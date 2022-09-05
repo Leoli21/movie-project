@@ -4,7 +4,7 @@ const API_KEY = 'api_key=d38867bd0697712d7274de2cbbe45fc5';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const API_MOVIE_URL = BASE_URL + '/discover/movie?sort_by=popularity.desc&' + API_KEY;
 const IMG_URL = 'https://image.tmdb.org/t/p/w500';
-const searchURL = BASE_URL + '/search/movie?' + API_KEY;
+const searchMovieURL = BASE_URL + '/search/movie?' + API_KEY;
 
 // Selecting DOM Elements
 const prev = document.getElementById('prev');
@@ -18,7 +18,7 @@ const searchBar = document.getElementById('search');
 const tagsElement = document.getElementById('tags');
 const movieNavBtn = document.getElementById('movieNav');
 // Genres Object
-const genres = [
+const movieGenres = [
     {
         "id": 28,
         "name": "Action"
@@ -121,6 +121,7 @@ setGenres();
 // of those genres
 function setGenres() {
     tagsElement.innerHTML = ''
+    genres = movieNavBtn.classList.contains('active') ? movieGenres : tvGenres;
     genres.forEach(genre => {
         const div = document.createElement('div');
         div.classList.add('tag');
@@ -143,7 +144,12 @@ function setGenres() {
                 }
             }
             console.log(selectedGenre);
-            getMovies(API_MOVIE_URL + '&with_genres=' + encodeURI(selectedGenre.join(',')));
+            if(movieNavBtn.classList.contains('active')) {
+                getMovies(API_MOVIE_URL + '&with_genres=' + encodeURI(selectedGenre.join(',')));
+            }
+            else {
+                getTVShows(API_URL_TV + '&with_genres=' + encodeURI(selectedGenre.join('')));
+            }
             highlightSelection();
         });
         tagsElement.append(div);
@@ -182,7 +188,12 @@ function clearBtn() {
         clear.addEventListener('click', ()=> {
             selectedGenre = [];
             setGenres();
-            getMovies(API_MOVIE_URL);
+            if(movieNavBtn.classList.contains('active')) {
+                getMovies(API_MOVIE_URL);
+            }
+            else {
+                getTVShows(API_URL_TV);
+            }
         });
         tagsElement.append(clear);
     }
@@ -254,13 +265,13 @@ getMovies(API_MOVIE_URL);
         
         main.appendChild(movieElement);
         document.getElementById(id).addEventListener('click', () => {
-            openNav(movie);
+            openMovieNav(movie);
         });
     })
  }
  const overlayContent = document.getElementById('overlay-content');
  /* Open when someone clicks on the span element */
-function openNav(movie) {
+function openMovieNav(movie) {
     let id = movie.id;
     fetch(BASE_URL + '/movie/' + id + '/videos?' + API_KEY).then(res=> res.json()).then(videoData => {
         console.log(videoData);
@@ -391,10 +402,20 @@ form.addEventListener('submit', (e) => {
     selectedGenre = [];
     highlightSelection();
     if(searchTerm) {
-        getMovies(searchURL + '&query=' + searchTerm);
+        if(movieNavBtn.classList.contains('active')) {
+            getMovies(searchMovieURL + '&query=' + searchTerm);
+        }
+        else {
+            getTVShows(searchTVURL + '&query=' + searchTerm);
+        }
     }
     else {
-        getMovies(API_MOVIE_URL);
+        if(movieNavBtn.classList.contains('active')) {
+            getMovies(API_MOVIE_URL);
+        }
+        else {
+            getTVShows(API_URL_TV);
+        }
     }
 });
 
@@ -422,7 +443,12 @@ function pageCall(page) {
     let key = queryParameters[queryParameters.length - 1].split('=');
     if(key[0] != 'page') {
         let url = lastUrl + '&page=' + page;
-        getMovies(url)
+        if(movieNavBtn.classList.contains('active')) {
+            getMovies(url);
+        }
+        else {
+            getTVShows(url);
+        }
     }
     else {
         key[1] = page.toString();
@@ -430,7 +456,12 @@ function pageCall(page) {
         queryParameters[queryParameters.length - 1] = newPageParams;
         let queryParams = queryParameters.join('&')
         let newUrl = urlSplit[0] + '?' + queryParams;
-        getMovies(newUrl);
+        if(movieNavBtn.classList.contains('active')) {
+            getMovies(newUrl);
+        }
+        else {
+            getTVShows(newUrl);
+        }
     }
 
 }
