@@ -34,6 +34,25 @@ function addTVShowsToList(tvShow) {
     localStorage.setItem('tvShows', JSON.stringify(tvShowList));
 }
 
+function removeMovieFromList(movie) {
+    // Find index of the movie passed to remove
+    const index = movieList.indexOf(movie);
+    if(index > -1) {
+        movieList.splice(index, 1);
+        // Reload the movies after removal and update local storage data
+        localStorage.setItem('movies', JSON.stringify(movieList));
+    }
+}
+
+function removeTVShowsFromList(tvShow) {
+    const index = tvShowList.indexOf(tvShow);
+    if(index > -1) {
+        tvShowList.splice(index, 1);
+        localStorage.setItem('tvShows', JSON.stringify(tvShowList));
+    }
+
+}
+
 function showSelectedMovies(movieList) {
     const movieRowTitle = document.createElement('h1');
     movieRowTitle.classList.add('watchlist-header')
@@ -70,10 +89,10 @@ function showSelectedMovies(movieList) {
                 openMovieNav(movie);
             });
             
-            // Adding an action listener to the 'Add To List' button for every
+            // Adding an action listener to the 'Remove' button for every
             // movieElement
             document.getElementById(id2).addEventListener('click', ()=> {
-                removeFromList(movie);
+                removeMovieFromList(movie);
             });
     
         })
@@ -126,10 +145,10 @@ function showSelectedTVShows(tvShowList) {
                 openTVNav(tvShow);
             });
     
-            // Adding an action listener to the 'Add To List' button for every
+            // Adding an action listener to the 'Remove' button for every
             // tvElement
             document.getElementById(id2).addEventListener('click', ()=> {
-              addTVShowsToList(tvShow);
+                removeTVShowsFromList(tvShow);
           });
         })
     }
