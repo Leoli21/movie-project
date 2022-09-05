@@ -3,8 +3,8 @@
 }
 
 :root {
-    --primary-color: #22254b;
-    --secondary-color: #373b69;
+    --primary-color: #D3D3D3;
+    --secondary-color: #000;
 }
 
 body {
@@ -21,12 +21,18 @@ body {
 
 /* Add a black background color to the top navigation bar */
 .topnav {
+    color: white;
     display: flex;
     align-items: center;
     overflow: hidden;
     background-color: var(--secondary-color);
   }
   
+  .topnav .title {
+    padding: 5px 20px;
+    font-weight: bold;
+  }
+
   /* Style the links inside the navigation bar */
   .topnav a {
     float: left;
@@ -51,6 +57,9 @@ body {
   }
 
   .topnav .search {
+    position: absolute;
+    top: 20px;
+    right: 30px;
     background-color: transparent;
     border: 2px solid var(--primary-color);
     padding: 0.5rem 1rem;
@@ -83,7 +92,7 @@ body {
 }
 
 .search::placeholder {
-    color: #7378c5;
+    color: white;
 }
 
 #main {
@@ -120,14 +129,14 @@ body {
 }
 
 .movie-info span {
-    background-color: var(--primary-color);
+    background-color: white;
     padding: 0.25rem 0.5rem;
     border-radius: 3px;
     font-weight: bold;
 }
 
 .movie-info span.green {
-    color: lightgreen;
+    color: green;
 }
 
 .movie-info span.orange {
@@ -214,9 +223,9 @@ body {
 }
 
 .tag {
-    color: white;
+    color: yellow;
     padding: 10px 20px;
-    background-color: orange;
+    background-color: #63666A;
     border-radius: 50px;
     margin: 5px;
     display: inline-block;
