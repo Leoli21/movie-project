@@ -106,8 +106,9 @@ var totalPages = 1000;
 movieNavBtn.addEventListener('click', ()=> {
     // Remove the active class from the tvNavBtn
     // Add the active class to the movieNavBtn
-    if(tvNavBtn.classList.contains('active')) {
+    if(tvNavBtn.classList.contains('active') || myListBtn.classList.contains('active')) {
         tvNavBtn.classList.remove('active');
+        myListBtn.classList.remove('active');
         movieNavBtn.classList.add('active');
         getMovies(API_MOVIE_URL);
     }
@@ -207,7 +208,6 @@ getMovies(API_MOVIE_URL);
  function getMovies(url) {
     lastUrl = url;
     fetch(url).then(res => res.json()).then(data => {
-        console.log(data.results);
         if(data.results.length != 0) {
             showMovies(data.results);
             currentPage = data.page;
@@ -246,6 +246,7 @@ getMovies(API_MOVIE_URL);
     data.forEach(movie => {
         const {title, poster_path, vote_average, overview, id} = movie;
         const movieElement = document.createElement('div');
+        let id2 = id * -1;
         movieElement.classList.add('movie');
         movieElement.innerHTML = `
             <img src="${poster_path ? IMG_URL + poster_path: "https://via.placeholder.com/1080x1530"}" alt="${title}">
@@ -260,15 +261,28 @@ getMovies(API_MOVIE_URL);
                 ${overview}
                 <br/>
                 <button class="know-more" id="${id}">More Details</button>
+                <button class="add-list" id="${id2}">Add To List</button>
             </div>
         `
         
         main.appendChild(movieElement);
+
+        // Adding an action listener to the 'More Details' button for every
+        // movieElement
         document.getElementById(id).addEventListener('click', () => {
             openMovieNav(movie);
         });
+        
+        // Adding an action listener to the 'Add To List' button for every
+        // movieElement
+        document.getElementById(id2).addEventListener('click', ()=> {
+            addMoviesToList(movie);
+        });
+
     })
  }
+
+
  const overlayContent = document.getElementById('overlay-content');
  /* Open when someone clicks on the span element */
 function openMovieNav(movie) {

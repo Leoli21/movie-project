@@ -78,8 +78,9 @@ tvGenres = [
 tvNavBtn.addEventListener('click', ()=> {
     // Remove the active class from the movieBtn
     // Add the active class to the tvBtn
-    if(movieNavBtn.classList.contains('active')) {
+    if(movieNavBtn.classList.contains('active') || myListBtn.classList.contains('active')) {
         movieNavBtn.classList.remove('active');
+        myListBtn.classList.remove('active');
         tvNavBtn.classList.add('active');
         setGenres();
         getTVShows(API_URL_TV);
@@ -129,6 +130,7 @@ function getTVShows(url) {
     data.forEach(tvShow => {
         const {name, poster_path, vote_average, overview, id} = tvShow;
         const tvElement = document.createElement('div');
+        let id2 = id * -1;
         tvElement.classList.add('tvShow');
         tvElement.innerHTML = `
             <img src="${poster_path ? IMG_URL + poster_path: "https://via.placeholder.com/1080x1530"}" alt="${name}">
@@ -143,13 +145,23 @@ function getTVShows(url) {
                 ${overview}
                 <br/>
                 <button class="know-more" id="${id}">More Details</button>
+                <button class="add-list" id="${id2}">Add To List</button>
             </div>
         `
         
         main.appendChild(tvElement);
+
+        // Adding an action listener to the 'More Details' button for every
+        // tvElement
         document.getElementById(id).addEventListener('click', () => {
             openTVNav(tvShow);
         });
+
+        // Adding an action listener to the 'Add To List' button for every
+        // tvElement
+        document.getElementById(id2).addEventListener('click', ()=> {
+          addTVShowsToList(tvShow);
+      });
     })
  }
 

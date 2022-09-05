@@ -147,6 +147,11 @@ body {
     color: red;
 }
 
+.watchlist-header {
+    text-align: center;
+    width: 100%;
+    padding: 0.25rem 0.5rem;
+}
 .overview {
     position: absolute;
     left: 0;
@@ -223,7 +228,7 @@ body {
 }
 
 .tag {
-    color: yellow;
+    color: lightcyan;
     padding: 10px 20px;
     background-color: #63666A;
     border-radius: 50px;
@@ -276,6 +281,35 @@ body {
     padding: 10px 20px;
     margin-top: 5px;
     cursor: pointer;
+}
+
+.add-list {
+    background-color: purple;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: 0;
+    border-radius: 50px;
+    padding: 10px 20px;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.remove-list {
+    background-color: red;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: 0;
+    border-radius: 50px;
+    padding: 10px 20px;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.movie-row {
+    display: flex;
+
 }
 
 .overlay {
